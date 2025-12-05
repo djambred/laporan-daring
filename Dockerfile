@@ -18,10 +18,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy aplikasi Streamlit
 COPY streamlit_app.py .
-COPY utils.py .
+COPY mahasiswa_app.py .
+COPY utils_simple.py .
 
 # Copy environment jika ada
-COPY .env* ./
+COPY .env* ./ 2>/dev/null || true
 
 # Create temp directory untuk file sementara
 RUN mkdir -p /tmp/laporan_temp /root/.streamlit
