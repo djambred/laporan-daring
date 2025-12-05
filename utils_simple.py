@@ -144,7 +144,11 @@ def generate_simple_pdf(data: Dict, photo_paths: List[str] = None) -> str:
         pdf.set_font('Arial', '', 10)
         for i, note in enumerate(catatan, 1):
             clean_note = clean_string(note)
-            pdf.multi_cell(0, 6, f"{i}. {clean_note}")
+            # Use effective page width (page width - left/right margins)
+            effective_width = pdf.w - pdf.l_margin - pdf.r_margin
+            # Ensure we start at left margin for each line
+            pdf.set_x(pdf.l_margin)
+            pdf.multi_cell(effective_width, 6, f"{i}. {clean_note}")
         
         pdf.ln(3)
     
@@ -172,8 +176,10 @@ def generate_simple_pdf(data: Dict, photo_paths: List[str] = None) -> str:
     # Gunakan width yang safe (max text area width)
     max_width = pdf.w - pdf.l_margin - pdf.r_margin  # Total available width
     
+    # Render standard notes dengan width efektif dan reset X
     for i, note in enumerate(catatan_standard, 1):
         clean_note = clean_string(note)
+        pdf.set_x(pdf.l_margin)
         pdf.multi_cell(max_width, 5, f"{i}. {clean_note}", 0, 'L')
     
     pdf.ln(10)
