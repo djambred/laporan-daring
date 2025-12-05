@@ -21,9 +21,6 @@ COPY streamlit_app.py .
 COPY mahasiswa_app.py .
 COPY utils_simple.py .
 
-# Copy environment jika ada
-COPY .env* ./ 2>/dev/null || true
-
 # Create temp directory untuk file sementara
 RUN mkdir -p /tmp/laporan_temp /root/.streamlit
 
