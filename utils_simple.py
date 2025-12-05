@@ -144,8 +144,7 @@ def generate_simple_pdf(data: Dict, photo_paths: List[str] = None) -> str:
         pdf.set_font('Arial', '', 10)
         for i, note in enumerate(catatan, 1):
             clean_note = clean_string(note)
-            # Multi_cell dengan width eksplisit 190mm
-            pdf.multi_cell(190, 6, f"{i}. {clean_note}")
+            pdf.multi_cell(0, 6, f"{i}. {clean_note}")
         
         pdf.ln(3)
     
@@ -154,11 +153,11 @@ def generate_simple_pdf(data: Dict, photo_paths: List[str] = None) -> str:
     pdf.cell(0, 10, 'Catatan:', 0, 1, 'L')
     pdf.ln(2)
     
-    pdf.set_font('Arial', '', 10)
+    pdf.set_font('Arial', '', 9)
     
-    # Batasi panjang link agar tidak overflow
-    link_pres = link_presentasi[:80] + '...' if len(link_presentasi) > 80 else link_presentasi
-    link_rek = link_rekaman[:80] + '...' if len(link_rekaman) > 80 else link_rekaman
+    # Link akan di-wrap jika terlalu panjang (tidak dipotong)
+    link_pres = link_presentasi if link_presentasi else '-'
+    link_rek = link_rekaman if link_rekaman else '-'
     
     catatan_standard = [
         'Dosen menyediakan link zoom perkuliahan dan mengundang mahasiswa dalam perkulihan daring',
@@ -170,10 +169,12 @@ def generate_simple_pdf(data: Dict, photo_paths: List[str] = None) -> str:
         f'Link rekaman (jika ada): {link_rek}'
     ]
     
-    # Multi_cell dengan width eksplisit 190mm (safe width)
+    # Gunakan width yang safe (max text area width)
+    max_width = pdf.w - pdf.l_margin - pdf.r_margin  # Total available width
+    
     for i, note in enumerate(catatan_standard, 1):
         clean_note = clean_string(note)
-        pdf.multi_cell(190, 6, f"{i}. {clean_note}")
+        pdf.multi_cell(max_width, 5, f"{i}. {clean_note}", 0, 'L')
     
     pdf.ln(10)
     
