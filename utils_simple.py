@@ -98,9 +98,9 @@ def generate_simple_pdf(data: Dict, photo_paths: List[str] = None) -> str:
     pdf.set_font('Arial', 'B', 9)
     pdf.set_fill_color(200, 200, 200)
     
-    # Adjusted widths - total 190mm (fit A4 with margins)
-    widths = [10, 65, 45, 20, 30]
-    headers = ['No', 'Nama', 'NPM', 'Hadir', 'T. Hadir']
+    # Adjusted widths - total 160mm (safe for A4: 210mm - 40mm margin)
+    widths = [8, 60, 40, 25, 27]
+    headers = ['No', 'Nama', 'NPM', 'Hadir', 'T.Hadir']
     
     for i, header in enumerate(headers):
         pdf.cell(widths[i], 7, header, 1, 0, 'C', True)
@@ -114,8 +114,8 @@ def generate_simple_pdf(data: Dict, photo_paths: List[str] = None) -> str:
         status = clean_string(mhs.get('status', ''))
         
         # Calculate row height based on nama length
-        # Approx 30 chars per line for 65mm width at font size 8
-        lines_needed = max(1, (len(nama) + 29) // 30)
+        # Approx 28 chars per line for 60mm width at font size 8
+        lines_needed = max(1, (len(nama) + 27) // 28)
         row_height = 6 * lines_needed
         
         # Save starting Y position
