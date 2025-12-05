@@ -95,34 +95,35 @@ def generate_simple_pdf(data: Dict, photo_paths: List[str] = None) -> str:
     pdf.ln(2)
     
     # Table header
-    pdf.set_font('Arial', 'B', 10)
+    pdf.set_font('Arial', 'B', 9)
     pdf.set_fill_color(200, 200, 200)
     
-    widths = [12, 70, 50, 25, 33]
-    headers = ['No', 'Nama', 'NPM', 'Hadir', 'Tidak Hadir']
+    # Adjusted widths - total 190mm (fit A4 with margins)
+    widths = [10, 65, 45, 20, 30]
+    headers = ['No', 'Nama', 'NPM', 'Hadir', 'T. Hadir']
     
     for i, header in enumerate(headers):
-        pdf.cell(widths[i], 8, header, 1, 0, 'C', True)
+        pdf.cell(widths[i], 7, header, 1, 0, 'C', True)
     pdf.ln()
     
     # Table body
-    pdf.set_font('Arial', '', 9)
+    pdf.set_font('Arial', '', 8)
     for idx, mhs in enumerate(mahasiswa, 1):
-        nama = clean_string(mhs.get('nama', ''))[:30]
-        npm = clean_string(mhs.get('npm', ''))
+        nama = clean_string(mhs.get('nama', ''))[:28]  # Shorter name
+        npm = clean_string(mhs.get('npm', ''))[:15]    # Shorter NPM
         status = clean_string(mhs.get('status', ''))
         
-        pdf.cell(widths[0], 7, str(idx), 1, 0, 'C')
-        pdf.cell(widths[1], 7, nama, 1, 0, 'L')
-        pdf.cell(widths[2], 7, npm, 1, 0, 'C')
+        pdf.cell(widths[0], 6, str(idx), 1, 0, 'C')
+        pdf.cell(widths[1], 6, nama, 1, 0, 'L')
+        pdf.cell(widths[2], 6, npm, 1, 0, 'C')
         
         # Hadir checkbox
         if 'hadir' in status.lower():
-            pdf.cell(widths[3], 7, 'V', 1, 0, 'C')
-            pdf.cell(widths[4], 7, '', 1, 1, 'C')
+            pdf.cell(widths[3], 6, 'V', 1, 0, 'C')
+            pdf.cell(widths[4], 6, '', 1, 1, 'C')
         else:
-            pdf.cell(widths[3], 7, '', 1, 0, 'C')
-            pdf.cell(widths[4], 7, 'V', 1, 1, 'C')
+            pdf.cell(widths[3], 6, '', 1, 0, 'C')
+            pdf.cell(widths[4], 6, 'V', 1, 1, 'C')
     
     pdf.ln(5)
     
