@@ -15,7 +15,7 @@ services:
       - "8501:8501"
     
     volumes:
-      - laporan_data:/app/data
+      - ./laporan_data.json:/app/laporan_data.json
       - ./laporan_output:/app/output
       - ./temp_files:/tmp/laporan_temp
     
@@ -53,9 +53,9 @@ services:
     ports:
       - "8502:8502"
     
-    # SHARE VOLUME YANG SAMA dengan dosen-app
+    # SHARE FILE JSON YANG SAMA dengan dosen-app
     volumes:
-      - laporan_data:/app/data
+      - ./laporan_data.json:/app/laporan_data.json
       - ./laporan_output:/app/output
       - ./temp_files:/tmp/laporan_temp
     
@@ -84,7 +84,3 @@ services:
 networks:
   laporan-network:
     driver: bridge
-
-volumes:
-  laporan_data:
-    driver: local
