@@ -106,43 +106,32 @@ def generate_simple_pdf(data: Dict, photo_paths: List[str] = None) -> str:
         pdf.cell(widths[i], 7, header, 1, 0, 'C', True)
     pdf.ln()
     
-    # Table body with multi-line support
+    # Table body - simple approach
     pdf.set_font('Arial', '', 8)
     for idx, mhs in enumerate(mahasiswa, 1):
         nama = clean_string(mhs.get('nama', ''))
-        npm = clean_string(mhs.get('npm', ''))[:15]  # NPM tetap dipotong
+        npm = clean_string(mhs.get('npm', ''))[:12]  # NPM max 12 char
         status = clean_string(mhs.get('status', ''))
         
-        # Calculate row height based on nama length
-        # Approx 28 chars per line for 60mm width at font size 8
-        lines_needed = max(1, (len(nama) + 27) // 28)
-        row_height = 6 * lines_needed
+        # Truncate nama if too long, add ... 
+        max_chars = 32
+        if len(nama) > max_chars:
+            nama = nama[:max_chars-3] + '...'
         
-        # Save starting Y position
-        y_start = pdf.get_y()
+        # Fixed row height
+        row_height = 6
         
-        # No column
         pdf.cell(widths[0], row_height, str(idx), 1, 0, 'C')
-        
-        # Nama column with multi_cell
-        x_after_no = pdf.get_x()
-        pdf.multi_cell(widths[1], 6, nama, 1, 'L')
-        y_after_nama = pdf.get_y()
-        
-        # Set position for NPM column (same row as No)
-        pdf.set_xy(x_after_no + widths[1], y_start)
+        pdf.cell(widths[1], row_height, nama, 1, 0, 'L')
         pdf.cell(widths[2], row_height, npm, 1, 0, 'C')
         
         # Hadir checkbox
         if 'hadir' in status.lower():
             pdf.cell(widths[3], row_height, 'V', 1, 0, 'C')
-            pdf.cell(widths[4], row_height, '', 1, 0, 'C')
+            pdf.cell(widths[4], row_height, '', 1, 1, 'C')
         else:
             pdf.cell(widths[3], row_height, '', 1, 0, 'C')
-            pdf.cell(widths[4], row_height, 'V', 1, 0, 'C')
-        
-        # Move to next row
-        pdf.set_xy(10, y_after_nama)
+            pdf.cell(widths[4], row_height, 'V', 1, 1, 'C')
     
     pdf.ln(5)
     
