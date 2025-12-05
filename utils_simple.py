@@ -227,11 +227,12 @@ def generate_simple_pdf(data: Dict, photo_paths: List[str] = None) -> str:
     pdf.line(130, pdf.get_y(), 190, pdf.get_y())
     pdf.ln(2)
     
-    if ttd_nama:
-        pdf.set_font('Arial', 'B', 11)
-        pdf.cell(0, 8, ttd_nama, 0, 1, 'R')
-        pdf.set_font('Arial', '', 10)
-        pdf.cell(0, 6, '0021066303', 0, 1, 'R')
+    # Nama dosen dan NIDN - gunakan default jika kosong
+    nama_dosen_ttd = ttd_nama if ttd_nama else dosen if dosen else 'Dra. Asmawati M.Pd'
+    pdf.set_font('Arial', 'B', 11)
+    pdf.cell(0, 8, nama_dosen_ttd, 0, 1, 'R')
+    pdf.set_font('Arial', '', 10)
+    pdf.cell(0, 6, 'NIDN. 0021066303', 0, 1, 'R')
     
     # DOKUMENTASI / FOTO - 4 foto per halaman (PALING AKHIR)
     if photo_paths:
