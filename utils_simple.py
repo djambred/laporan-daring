@@ -106,24 +106,43 @@ def generate_simple_pdf(data: Dict, photo_paths: List[str] = None) -> str:
         pdf.cell(widths[i], 7, header, 1, 0, 'C', True)
     pdf.ln()
     
-    # Table body
+    # Table body with multi-line support
     pdf.set_font('Arial', '', 8)
     for idx, mhs in enumerate(mahasiswa, 1):
-        nama = clean_string(mhs.get('nama', ''))[:28]  # Shorter name
-        npm = clean_string(mhs.get('npm', ''))[:15]    # Shorter NPM
+        nama = clean_string(mhs.get('nama', ''))
+        npm = clean_string(mhs.get('npm', ''))[:15]  # NPM tetap dipotong
         status = clean_string(mhs.get('status', ''))
         
-        pdf.cell(widths[0], 6, str(idx), 1, 0, 'C')
-        pdf.cell(widths[1], 6, nama, 1, 0, 'L')
-        pdf.cell(widths[2], 6, npm, 1, 0, 'C')
+        # Calculate row height based on nama length
+        # Approx 30 chars per line for 65mm width at font size 8
+        lines_needed = max(1, (len(nama) + 29) // 30)
+        row_height = 6 * lines_needed
+        
+        # Save starting Y position
+        y_start = pdf.get_y()
+        
+        # No column
+        pdf.cell(widths[0], row_height, str(idx), 1, 0, 'C')
+        
+        # Nama column with multi_cell
+        x_after_no = pdf.get_x()
+        pdf.multi_cell(widths[1], 6, nama, 1, 'L')
+        y_after_nama = pdf.get_y()
+        
+        # Set position for NPM column (same row as No)
+        pdf.set_xy(x_after_no + widths[1], y_start)
+        pdf.cell(widths[2], row_height, npm, 1, 0, 'C')
         
         # Hadir checkbox
         if 'hadir' in status.lower():
-            pdf.cell(widths[3], 6, 'V', 1, 0, 'C')
-            pdf.cell(widths[4], 6, '', 1, 1, 'C')
+            pdf.cell(widths[3], row_height, 'V', 1, 0, 'C')
+            pdf.cell(widths[4], row_height, '', 1, 0, 'C')
         else:
-            pdf.cell(widths[3], 6, '', 1, 0, 'C')
-            pdf.cell(widths[4], 6, 'V', 1, 1, 'C')
+            pdf.cell(widths[3], row_height, '', 1, 0, 'C')
+            pdf.cell(widths[4], row_height, 'V', 1, 0, 'C')
+        
+        # Move to next row
+        pdf.set_xy(10, y_after_nama)
     
     pdf.ln(5)
     
