@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+  # Service 1: Aplikasi Dosen (Port 8501)
+  dosen-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: laporan-dosen
+    command: streamlit run streamlit_app.py --server.port=8501 --server.address=0.0.0.0
+    
+    restart: unless-stopped
+    
+    ports:
+      - "8501:8501"
+    
+    volumes:
+      - laporan_data:/app/data
+      - ./laporan_output:/app/output
+      - ./temp_files:/tmp/laporan_temp
+    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    
+    networks:
+      - laporan-network
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+    
+    environment:
+      - STREAMLIT_SERVER_PORT=8501
+  
+  # Service 2: Aplikasi Mahasiswa (Port 8502)
+  mahasiswa-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: laporan-mahasiswa
+    command: streamlit run mahasiswa_app.py --server.port=8502 --server.address=0.0.0.0
+    
+    restart: unless-stopped
+    
+    ports:
+      - "8502:8502"
+    
+    # SHARE VOLUME YANG SAMA dengan dosen-app
+    volumes:
+      - laporan_data:/app/data
+      - ./laporan_output:/app/output
+      - ./temp_files:/tmp/laporan_temp
+    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    
+    networks:
+      - laporan-network
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+    
+    environment:
+      - STREAMLIT_SERVER_PORT=8502
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+
+networks:
+  laporan-network:
+    driver: bridge
+
+volumes:
+  laporan_data:
+    driver: local
