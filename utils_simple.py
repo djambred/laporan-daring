@@ -160,11 +160,11 @@ def generate_simple_pdf(data: Dict, photo_paths: List[str] = None) -> str:
     link_rek = link_rekaman if link_rekaman else '-'
     
     catatan_standard = [
-        'Dosen menyediakan link zoom perkuliahan dan mengundang mahasiswa dalam perkulihan daring',
-        'Perkuliahan direkam (jika bisa) dan tangkap layar untuk dokumentasi',
-        'Perkuliahan dilaksanakan sesuai waktu kuliah luring atau disesuaikan dengan situasi',
-        'Dosen dapat mengisikan absensi pada BAP sesuai jam kuliah masing-masing',
-        'Dosen mengumpulkan pelaporan kuliah daring kepada ka. Prodi',
+        f'Dosen menyediakan link zoom perkuliahan dan mengundang mahasiswa dalam perkulihan daring',
+        f'Perkuliahan direkam (jika bisa) dan tangkap layar untuk dokumentasi',
+        f'Perkuliahan dilaksanakan sesuai waktu kuliah luring atau disesuaikan dengan situasi',
+        f'Dosen dapat mengisikan absensi pada BAP sesuai jam kuliah masing-masing',
+        f'Dosen mengumpulkan pelaporan kuliah daring kepada ka. Prodi',
         f'Link Presentasi mahasiswa (jika ada): {link_pres}',
         f'Link rekaman (jika ada): {link_rek}'
     ]
